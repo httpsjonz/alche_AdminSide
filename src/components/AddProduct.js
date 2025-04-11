@@ -68,7 +68,7 @@ const AddProduct = ({ setShowAddForm, handleAdd }) => {
         </select>
       </div>
   
-      {/* Pastry Description & Price (Same Row) */}
+      {/* Pastry Description */}
       <div className="form-group">
         <label>Pastry Description</label>
         <textarea
@@ -76,45 +76,76 @@ const AddProduct = ({ setShowAddForm, handleAdd }) => {
           onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })}
         />
       </div>
-  <div className="form-group price-input-group">
-    <label>Pastry Price</label>
-    <div className="price-wrapper">
-      <span className="peso-symbol">₱</span>
-      <input
-        type="text"
-        value={newProduct.price}
-        onChange={(e) => {
-          // Remove all non-numeric characters except decimal point
-          let value = e.target.value.replace(/[^0-9.]/g, "");
-          
-          // Prevent multiple decimal points
-          if ((value.match(/\./g) || []).length > 1) {
-            return;
-          }
 
-          // Format the value
-          if (value) {
-            // Remove leading zeros
-            value = value.replace(/^0+/, '');
-            // Ensure proper decimal formatting
-            const parts = value.split('.');
-            if (parts.length > 1) {
-              value = parts[0] + '.' + parts[1].slice(0, 2);
-            }
-          }
+      {/* Pastry Price */}
+      <div className="form-group">
+        <label>Pastry Price</label>
+        <div className="price-input-group">
+          <div className="price-wrapper">
+            <span className="peso-symbol">₱</span>
+            <input
+              type="text"
+              value={newProduct.price}
+              placeholder="0.00"
+              onKeyDown={(e) => {
+                // Allow: backspace, delete, tab, escape, enter, arrows
+                if ([8, 46, 9, 27, 13, 37, 38, 39, 40].includes(e.keyCode)) {
+                  return;
+                }
+                // Allow: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+                if (e.ctrlKey && [65, 67, 86, 88].includes(e.keyCode)) {
+                  return;
+                }
+                // Allow: numbers 0-9
+                if ((e.keyCode >= 48 && e.keyCode <= 57) || 
+                    (e.keyCode >= 96 && e.keyCode <= 105)) {
+                  return;
+                }
+                // Allow: single decimal point
+                if (e.keyCode === 190 && !e.target.value.includes('.')) {
+                  return;
+                }
+                // Prevent all other keys
+                e.preventDefault();
+              }}
+              onChange={(e) => {
+                let value = e.target.value;
+              
+                // Remove all non-numeric characters except decimal point
+                value = value.replace(/[^0-9.]/g, "");
+              
+                // Prevent multiple decimal points
+                if ((value.match(/\./g) || []).length > 1) {
+                  value = value.substring(0, value.length - 1);
+                }
+              
+                // Remove leading zeros unless it's "0."
+                if (value && !value.startsWith("0.")) {
+                  value = value.replace(/^0+/, "");
+                }
+              
+                // Limit to two decimal places
+                const parts = value.split(".");
+                if (parts.length > 1) {
+                  value = parts[0] + "." + parts[1].slice(0, 2);
+                }
+              
+                setNewProduct({ ...newProduct, price: value });
+              }}
 
-          setNewProduct({ ...newProduct, price: value });
-        }}
-        onBlur={(e) => {
-          // Format to 2 decimal places when leaving the field
-          if (e.target.value && !isNaN(e.target.value)) {
-            const formattedValue = parseFloat(e.target.value).toFixed(2);
-            setNewProduct({ ...newProduct, price: formattedValue });
-          }
-        }}
-      />
-    </div>
-  </div>
+              onBlur={(e) => {
+                let value = e.target.value;
+                if (value === '') {
+                  setNewProduct({ ...newProduct, price: '' });
+                } else if (!isNaN(value)) {
+                  const formattedValue = parseFloat(value).toFixed(2);
+                  setNewProduct({ ...newProduct, price: formattedValue });
+                }
+              }}
+            />
+          </div>
+        </div>
+      </div>
 
 
 

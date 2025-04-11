@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import "../style/AdminDashboard.css";
 import EditProduct from "../components/EditProduct";
 import "font-awesome/css/font-awesome.min.css"; 
-import "../components/AddProduct";
+import AddProduct from "../components/AddProduct";
 
 const productsData = [
   { 
@@ -48,13 +48,7 @@ const AdminDashboard = () => {
   const [showPopup, setShowPopup] = useState(false);
   const [isUserAccountVisible, setIsUserAccountVisible] = useState(false);
   const [products, setProducts] = useState(productsData);
-  const [newProduct, setNewProduct] = useState({ 
-    name: "", 
-    category: "Cake", 
-    price: "", 
-    description: "",
-    image: "/images/image1.jpg" // Default image
-  });
+
   const [showAddForm, setShowAddForm] = useState(false);
   
 
@@ -81,13 +75,6 @@ const AdminDashboard = () => {
     };
     setProducts([...products, newProductData]);
     setShowAddForm(false);
-    setNewProduct({
-      name: "", 
-      category: "Cake", 
-      price: "", 
-      description: "",
-      image: "/images/image1.jpg"
-    });
   };
 
   const handleDelete = (id) => {
@@ -175,47 +162,17 @@ const AdminDashboard = () => {
 
             {/* Add Form Side */}
             {showAddForm && (
-              <div className="add-product-form">
-                <h2>Add Product</h2>
-                <label>Pastry Name</label>
-                <input type="text" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} />
-
-                <label>Pastry Category</label>
-                <select value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })}>
-                  <option value="Cake">Cake</option>
-                  <option value="Cookie">Cookie</option>
-                </select>
-
-                <label>Pastry Description</label>
-                <textarea value={newProduct.description} onChange={(e) => setNewProduct({ ...newProduct, description: e.target.value })} />
-
-                <label>Pastry Price</label>
-                <input type="text" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} />
-
-                <label>Image</label>
-                <input 
-                  type="file" 
-                  accept="image/*"
-                  onChange={(e) => {
-                    const file = e.target.files[0];
-                    if (file) {
-                      setNewProduct({...newProduct, image: URL.createObjectURL(file)});
-                    }
-                  }}
-                />
-
-                <div className="add-product-buttons">
-                  <button onClick={() => setShowAddForm(false)}>Back</button>
-                  <button onClick={() => handleAddProduct(newProduct)}>Add</button>
-                </div>
-              </div>
+              <AddProduct
+                setShowAddForm={setShowAddForm}
+                handleAdd={handleAddProduct}
+              />
             )}
           </div>
         </>
       )}
 
-          {/* Product Detail View */}
-          {selectedTab === "Product" && selectedProduct && (
+      {/* Product Detail View */}
+      {selectedTab === "Product" && selectedProduct && (
             <div className="product-section" style={{ gap: '5px' }}>
               <div className="product-detail-view">
                 <button className="back-button" onClick={() => setSelectedProduct(null)}>Back</button>
@@ -235,13 +192,11 @@ const AdminDashboard = () => {
                   </div>
                 </div>
               </div>
-              {/* Edit Product Form */}
-              {editProduct && <EditProduct editProduct={editProduct} setEditProduct={setEditProduct} handleUpdate={handleUpdate} />}
-            {/* aDD Product Form */}
-            {newProduct && <setNewProduct newProduct={newProduct} setNewProduct={setNewProduct} handleAddProduct={handleAddProduct} />}
-            </div>
-            
-          )}
+            {/* Edit Product Form */}
+            {editProduct && <EditProduct editProduct={editProduct} setEditProduct={setEditProduct} handleUpdate={handleUpdate} />}
+          </div>
+        )}
+        
       {/* Popup Confirmation */}
       {showPopup && (
         <div className="popup">
@@ -266,7 +221,12 @@ const AdminDashboard = () => {
           <p>Order management content goes here...</p>
         </div>
       )}
+
+<footer className="footer">
+  <img src="/images/footerimg.jpg" alt="Footer" className="footer-image" />
+</footer>
     </div>
+
   );
 };
 
