@@ -8,6 +8,7 @@ const AddProduct = ({ setShowAddForm, handleAdd }) => {
     description: "",
     category: "Cake",
     image: null,
+    stock: ""
   });
   const [showPopup, setShowPopup] = useState(false);
 
@@ -147,6 +148,23 @@ const AddProduct = ({ setShowAddForm, handleAdd }) => {
         </div>
       </div>
 
+      {/* Pastry Stock */}
+      <div className="form-group">
+        <label>Pastry Stock</label>
+        <input
+          type="number"
+          min="0"
+          value={newProduct.stock}
+          placeholder="0"
+          onChange={(e) => {
+            const value = e.target.value;
+            if (/^\d*$/.test(value)) {
+              setNewProduct({ ...newProduct, stock: value });
+            }
+          }}
+        />
+      </div>
+
 
 
       {/* Buttons (Aligned to the Right) */}
@@ -165,7 +183,8 @@ const AddProduct = ({ setShowAddForm, handleAdd }) => {
             const priceValue = newProduct.price.replace(/[^0-9.]/g, '');
             const formattedProduct = {
               ...newProduct,
-              price: priceValue
+              price: priceValue,
+              stock: parseInt(newProduct.stock) || 0
             };
             handleAdd(formattedProduct);
           }}>Confirm</button>

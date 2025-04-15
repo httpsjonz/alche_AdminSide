@@ -15,7 +15,8 @@
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  padding-bottom: 20px; /* Reduced padding to match footer height */
+  padding-bottom: 20px; 
+  justify-content: space-between;
 }
 .header {
   display: flex;
@@ -550,15 +551,39 @@ input::placeholder {
 
 .footer {
   width: 100%;
-  margin-top: 20px;
+  margin: 20px 0 0 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  position: relative;
+  box-sizing: border-box;
+  background-color: #333;
+  z-index: 10;
+  left: 0;
+  overflow-x: hidden;
 }
 
 .footer-image {
   width: 100%;
-  max-height: 200px;
+  max-height: 90px;
   object-fit: cover;
   display: block;
+}
+
+.footer-image {
+  width: 100%;
+  max-height: 90px;
+  object-fit: cover;
+  display: block;
+}
+
+.stock-input {
+  width: 50px;
+  margin-left: 5px;
+  padding: 2px;
+  font-size: 14px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }

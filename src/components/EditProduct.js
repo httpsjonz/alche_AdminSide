@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import "../style/AdminDashboard.css";
 
 const EditProduct = ({ editProduct, setEditProduct, handleUpdate }) => { // Accept handleUpdate
-  const [updatedProduct, setUpdatedProduct] = useState(editProduct);
+  const [updatedProduct, setUpdatedProduct] = useState({
+    ...editProduct
+  });
   const [showPopup, setShowPopup] = useState(false);
 
   // Close form when clicking outside
@@ -94,6 +96,7 @@ const EditProduct = ({ editProduct, setEditProduct, handleUpdate }) => { // Acce
         <option>Cookie</option>
       </select>
 
+
       {/* Image Upload Section */}
       <label>Image</label>
       <input type="file" accept="image/*" onChange={handleImageUpload} />
@@ -117,7 +120,8 @@ const EditProduct = ({ editProduct, setEditProduct, handleUpdate }) => { // Acce
             // Format price to 2 decimal places before submitting
             const formattedProduct = {
               ...updatedProduct,
-              price: parseFloat(updatedProduct.price || 0).toFixed(2)
+              price: parseFloat(updatedProduct.price || 0).toFixed(2),
+              stock: updatedProduct.stock !== undefined ? parseInt(updatedProduct.stock) : editProduct.stock
             };
             handleUpdate(formattedProduct);
             setEditProduct(null);

@@ -4,42 +4,24 @@ import EditProduct from "../components/EditProduct";
 import "font-awesome/css/font-awesome.min.css"; 
 import AddProduct from "../components/AddProduct";
 
-const productsData = [
-  { 
-    id: 1, 
-    name: "Chocolate Cake", 
-    category: "Cake", 
-    price: "₱20", 
-    description: "A delicious chocolate cake.",
-    image: "/images/image2.jpg"
-  },
-  { 
-    id: 2, 
-    name: "Sugar Cookie", 
-    category: "Cookie", 
-    price: "₱5", 
-    description: "Sweet and crunchy sugar cookie.",
-    image: "/images/image3.png" 
-  },
-  { 
-    id: 3, 
-    name: "Strawberry Cake", 
-    category: "Cake", 
-    price: "₱25", 
-    description: "A fresh strawberry-flavored cake.",
-    image: "/images/image1.jpg"
-  },
-  { 
-    id: 4, 
-    name: "Oatmeal Cookie", 
-    category: "Cookie", 
-    price: "₱4", 
-    description: "A healthy oatmeal cookie.",
-    image: "/images/image1.jpg"
-  }
-];
 
 const AdminDashboard = () => {
+
+  const [products, setProducts] = useState([
+    { id: 1, name: "Chocolate Cake", category: "Cake", price: "₱20", description: "A delicious chocolate cake.", image: "/images/image2.jpg", stock: 10 },
+    { id: 2, name: "Sugar Cookie", category: "Cookie", price: "₱5", description: "Sweet and crunchy sugar cookie.", image: "/images/image3.png", stock: 20 },
+    { id: 3, name: "Strawberry Cake", category: "Cake", price: "₱25", description: "A fresh strawberry-flavored cake.", image: "/images/image1.jpg", stock: 15 },
+    { id: 4, name: "Oatmeal Cookie", category: "Cookie", price: "₱4", description: "A healthy oatmeal cookie.", image: "/images/image1.jpg", stock: 30 }
+  ]);
+
+  const updateStock = (id, newStock) => {
+    setProducts(prevProducts =>
+      prevProducts.map(product =>
+        product.id === id ? { ...product, stock: newStock } : product
+      )
+    );
+  };
+
   const [selectedTab, setSelectedTab] = useState("Product"); 
   const [selectedCategory, setSelectedCategory] = useState("All Products");
   const [searchQuery, setSearchQuery] = useState("");
@@ -47,8 +29,6 @@ const AdminDashboard = () => {
   const [editProduct, setEditProduct] = useState(false);
   const [showPopup, setShowPopup] = useState(false);
   const [isUserAccountVisible, setIsUserAccountVisible] = useState(false);
-  const [products, setProducts] = useState(productsData);
-
   const [showAddForm, setShowAddForm] = useState(false);
   
 
@@ -71,7 +51,8 @@ const AdminDashboard = () => {
       ...product, 
       id: products.length + 1,
       price: formattedPrice,
-      image: product.image || "/images/image1.jpg" // Fallback to default image
+      image: product.image || "/images/image1.jpg", // Fallback to default image
+      stock: product.stock !== undefined ? product.stock : 0
     };
     setProducts([...products, newProductData]);
     setShowAddForm(false);
@@ -144,21 +125,34 @@ const AdminDashboard = () => {
                 </button>
               </div>
 
-              <div className="products-container">
-                {filteredProducts.map((product) => (
-                  <div key={product.id} className="product-card" onClick={() => setSelectedProduct(product)}>
-                    <img 
-                      src={product.image} 
-                      alt={product.name}
-                      className="product-card-image"
-                    />
-                    <h3>{product.name}</h3>
-                    <p className="category">{product.category}</p>
-                    <p className="price">{product.price}</p>
-                  </div>
-                ))}
-              </div>
-            </div>
+<div className="products-container">
+  {filteredProducts.map((product) => (
+    <div key={product.id} 
+    className="product-card"
+    onClick={() => setSelectedProduct(product)}
+>
+      <img 
+        src={product.image} 
+        alt={product.name}
+        className="product-card-image"
+      />
+      <h3>{product.name}</h3>
+      <p className="category">{product.category}</p>
+      <p className="price">{product.price}</p>
+      <p className="stock">Stock: 
+        <input
+          type="number"
+          min="0"
+          value={product.stock}
+          onClick={(e) => e.stopPropagation()} // Prevent parent onClick from triggering
+          onChange={(e) => updateStock(product.id, Number(e.target.value))}
+          className="stock-input"
+        />
+      </p>
+    </div>
+  ))}
+</div>
+      </div>
 
             {/* Add Form Side */}
             {showAddForm && (
@@ -184,6 +178,7 @@ const AdminDashboard = () => {
                     <h2>{selectedProduct.name}</h2>
                     <p className="category">Category: {selectedProduct.category}</p>
                     <p className="price">Price: {selectedProduct.price}</p>
+                    <p className="stock">Stock: {selectedProduct.stock !== undefined ? selectedProduct.stock : 0}</p>
                     <p className="description">{selectedProduct.description}</p>
                     <div className="product-actions">
                       <button onClick={() => setEditProduct(selectedProduct)}>Edit</button>
